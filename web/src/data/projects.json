@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1181378757",
+    "name": "alvin-huang-portfolio",
+    "description": "",
+    "url": "https://github.com/alvin999/alvin-huang-portfolio",
+    "github_repo": "https://github.com/alvin999/alvin-huang-portfolio",
+    "stars": 0,
+    "language": "",
+    "is_featured": false
+  },
+  {
+    "id": "1180820393",
+    "name": "kawashita",
+    "description": "",
+    "url": "https://github.com/alvin999/kawashita",
+    "github_repo": "https://github.com/alvin999/kawashita",
+    "stars": 0,
+    "language": "",
+    "is_featured": false
+  },
+  {
+    "id": "1178469686",
+    "name": "nikko-hill-nexus",
+    "description": "",
+    "url": "https://github.com/alvin999/nikko-hill-nexus",
+    "github_repo": "https://github.com/alvin999/nikko-hill-nexus",
+    "stars": 0,
+    "language": "CSS",
+    "is_featured": false
+  },
+  {
+    "id": "1136900435",
+    "name": "NHKNewsJLPTAnalyzer",
+    "description": "這是一個基於 Python 與 Streamlit 開發的日語學習輔助工具。它能夠自動爬取 NHK News Web 的新聞，並提供即時的中文翻譯以及 JLPT（日本語能力試驗）單字難度分析，幫助學習者更有效率地閱讀日文新聞。",
+    "url": "https://github.com/alvin999/NHKNewsJLPTAnalyzer",
+    "github_repo": "https://github.com/alvin999/NHKNewsJLPTAnalyzer",
+    "stars": 1,
+    "language": "Python",
+    "is_featured": true
+  },
+  {
+    "id": "1084686901",
+    "name": "FlavorWheelNote",
+    "description": "透過點擊直觀的風味輪，輕鬆記錄、整理並生成專業的品飲筆記。",
+    "url": "https://alvin999.github.io/FlavorWheelNote/",
+    "github_repo": "https://github.com/alvin999/FlavorWheelNote",
+    "stars": 1,
+    "language": "JavaScript",
+    "is_featured": true
+  },
+  {
+    "id": "1075149747",
+    "name": "BreakTetris",
+    "description": "將經典的「Tetris」與「Breakout」兩種玩法合而為一：  玩家可以隨時按下 C 鍵，在「俄羅斯方塊」與「打磚塊」兩種模式間自由切換。",
+    "url": "https://github.com/alvin999/BreakTetris",
+    "github_repo": "https://github.com/alvin999/BreakTetris",
+    "stars": 0,
+    "language": "Lua",
+    "is_featured": false
+  },
+  {
+    "id": "1070620555",
+    "name": "PostItTodo",
+    "description": "現代化的全端待辦事項應用，具備拖曳排序、即時同步等功能。",
+    "url": "https://github.com/alvin999/PostItTodo",
+    "github_repo": "https://github.com/alvin999/PostItTodo",
+    "stars": 0,
+    "language": "TypeScript",
+    "is_featured": false
+  },
+  {
+    "id": "1069685077",
+    "name": "2048ViControl",
+    "description": "這是一個使用 Lua 語言和 LÖVE 2D 遊戲框架開發的 2048 遊戲，提供 Vim 控制，在遊戲中熟悉 Vim 方向手感。",
+    "url": "https://github.com/alvin999/2048ViControl",
+    "github_repo": "https://github.com/alvin999/2048ViControl",
+    "stars": 0,
+    "language": "Lua",
+    "is_featured": false
+  },
+  {
+    "id": "1057756596",
+    "name": "cliptonum",
+    "description": "cliptonum 是一個簡單但高效的命令行工具（CLI），專門用於從系統剪貼簿內容中移除所有非數字字符（如標點符號、字母、空格等），並將純數字結果寫回剪貼簿。",
+    "url": "https://github.com/alvin999/cliptonum",
+    "github_repo": "https://github.com/alvin999/cliptonum",
+    "stars": 0,
+    "language": "Go",
+    "is_featured": false
+  },
+  {
+    "id": "1053191838",
+    "name": "HEICtoPNG",
+    "description": "這是一個使用 Python 和 Tkinter 打造的圖形化使用者介面 (GUI) 應用程式，旨在提供一個直觀且高效的方式，將 HEIC 格式的圖片批次轉換為 PNG 格式。",
+    "url": "https://github.com/alvin999/HEICtoPNG",
+    "github_repo": "https://github.com/alvin999/HEICtoPNG",
+    "stars": 0,
+    "language": "Python",
+    "is_featured": false
+  }
+]
