@@ -1,0 +1,17 @@
+# Backend (FastAPI)
+api/venv/
+api/__pycache__/
+api/.env
+
+# Database (PocketBase)
+pb/pb_data/
+pb/pb_public/
+
+# Frontend (Astro/Svelte) - node_modules and builds are usually handled in web/.gitignore, but good to ensure
+web/node_modules/
+web/dist/
+web/.astro/
+
+# IDEs and OS files
+.vscode/
+.DS_Store
