@@ -6,7 +6,18 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 // Initialize Firebase for build-time fetching
-const firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
+const safeParseConfig = (configStr: string) => {
+    try {
+        if (!configStr) return {};
+        const jsonMatch = configStr.match(/\{[\s\S]*\}/);
+        const jsonStr = jsonMatch ? jsonMatch[0] : configStr;
+        return JSON.parse(jsonStr);
+    } catch (e) {
+        return {};
+    }
+};
+
+const firebaseConfig = safeParseConfig(import.meta.env.PUBLIC_FIREBASE_CONFIG);
 let projects = [];
 
 if (firebaseConfig.apiKey) {
