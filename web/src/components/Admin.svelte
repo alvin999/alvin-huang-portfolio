@@ -14,17 +14,18 @@
     const ADMIN_EMAIL = "bingoppp@gmail.com"; 
 
     onMount(() => {
-        // Safe parse helper
-        const safeParse = (str) => {
-            try {
-                if (!str) return {};
-                const match = str.match(/\{[\s\S]*\}/);
-                return JSON.parse(match ? match[0] : str);
-            } catch (e) { return {}; }
-        };
+        let firebaseConfig = {};
+        try {
+            firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
+        } catch (e) {
+            console.error("Firebase config parse error", e);
+        }
 
-        const firebaseConfig = safeParse(import.meta.env.PUBLIC_FIREBASE_CONFIG);
         if (!firebaseConfig.apiKey) {
+            configError = true;
+            loading = false;
+            return;
+        }
             configError = true;
             loading = false;
             return;
