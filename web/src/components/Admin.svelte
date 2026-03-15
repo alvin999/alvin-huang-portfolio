@@ -14,12 +14,23 @@
     const ADMIN_EMAIL = "bingoppp@gmail.com"; 
 
     onMount(() => {
-        let firebaseConfig = {};
-        try {
-            firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
-        } catch (e) {
-            console.error("Firebase config parse error", e);
-        }
+        const superRobustParse = (str) => {
+            if (!str) return {};
+            try { return JSON.parse(str); } catch (e) {}
+            const braceMatch = str.match(/\{[\s\S]*\}/);
+            if (braceMatch) {
+                try { return JSON.parse(braceMatch[0]); } catch (e) {}
+            }
+            const config = {};
+            ["apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId", "measurementId"].forEach(key => {
+                const regex = new RegExp(`['"]?${key}['"]?\\s*:\\s*['"]?([^'"]+)['"]?`);
+                const match = str.match(regex);
+                if (match) config[key] = match[1].trim().replace(/['",;]$/, '');
+            });
+            return config;
+        };
+
+        const firebaseConfig = superRobustParse(import.meta.env.PUBLIC_FIREBASE_CONFIG);
 
         if (!firebaseConfig.apiKey) {
             configError = true;
