@@ -16,17 +16,19 @@
     onMount(() => {
         const superRobustParse = (str) => {
             if (!str) return {};
-            try { return JSON.parse(str); } catch (e) {}
-            const braceMatch = str.match(/\{[\s\S]*\}/);
-            if (braceMatch) {
-                try { return JSON.parse(braceMatch[0]); } catch (e) {}
-            }
             const config = {};
-            ["apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId", "measurementId"].forEach(key => {
-                const regex = new RegExp(`['"]?${key}['"]?\\s*:\\s*['"]?([^'"]+)['"]?`);
+            const keys = ["apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId", "measurementId"];
+            keys.forEach(key => {
+                const regex = new RegExp(`['"]?${key}['"]?\\s*:\\s*['"]?([^'"\\s,}]+)['"]?`);
                 const match = str.match(regex);
                 if (match) config[key] = match[1].trim().replace(/['",;]$/, '');
             });
+            if (!config.apiKey) {
+                try {
+                    const match = str.match(/\{[\s\S]*\}/);
+                    return JSON.parse(match ? match[0] : str);
+                } catch (e) { return {}; }
+            }
             return config;
         };
 
