@@ -6,25 +6,10 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 // Initialize Firebase for build-time fetching
-const superRobustParse = (str: string) => {
-    if (!str) return {};
-    const config: any = {};
-    const keys = ["apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId", "measurementId"];
-    keys.forEach(key => {
-        const regex = new RegExp(`['"]?${key}['"]?\\s*:\\s*['"]?([^'"\\s,}]+)['"]?`);
-        const match = str.match(regex);
-        if (match) config[key] = match[1].trim().replace(/['",;]$/, '');
-    });
-    if (!config.apiKey) {
-        try {
-            const match = str.match(/\{[\s\S]*\}/);
-            return JSON.parse(match ? match[0] : str);
-        } catch (e) { return {}; }
-    }
-    return config;
-};
-
-const firebaseConfig = superRobustParse(import.meta.env.PUBLIC_FIREBASE_CONFIG);
+let firebaseConfig: any = {};
+try {
+    firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
+} catch (e) {}
 let projects = [];
 
 if (firebaseConfig.apiKey) {
