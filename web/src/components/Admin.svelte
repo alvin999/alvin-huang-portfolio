@@ -9,10 +9,19 @@
     let projects = [];
     let isSyncing = false;
     let message = "";
+    let configError = false;
 
-    const ADMIN_EMAIL = "bingoppp@gmail.com"; // 您的 Email
+    const ADMIN_EMAIL = "bingoppp@gmail.com"; 
 
     onMount(() => {
+        // Check if config is likely invalid
+        const firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
+        if (!firebaseConfig.apiKey) {
+            configError = true;
+            loading = false;
+            return;
+        }
+
         onAuthStateChanged(auth, (u) => {
             user = u;
             loading = false;
@@ -87,6 +96,13 @@
 <div class="p-8 max-w-4xl mx-auto bg-black/20 rounded-3xl border border-white/10 backdrop-blur-md">
     {#if loading}
         <div class="text-center py-10">載入中...</div>
+    {:else if configError}
+        <div class="text-center py-10 border border-red-500/30 bg-red-500/5 rounded-2xl">
+            <h2 class="text-xl font-bold text-red-400 mb-2">Firebase 配置異常 ⚠️</h2>
+            <p class="text-gray-400 text-sm px-4">
+                系統無法讀取有效的金鑰配置。請檢查您的 GitHub Secret <code>PUBLIC_FIREBASE_CONFIG</code> 是否為正確的 JSON 格式。
+            </p>
+        </div>
     {:else if !user}
         <div class="text-center py-10">
             <h2 class="text-2xl font-bold mb-6">管理後台</h2>
