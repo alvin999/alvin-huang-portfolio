@@ -12,6 +12,7 @@
     "@astrojs/svelte": "^7.2.5",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.17.1",
+    "firebase": "^12.10.0",
     "svelte": "^5.53.7",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3"

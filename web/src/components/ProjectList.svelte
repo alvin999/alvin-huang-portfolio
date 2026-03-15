@@ -30,7 +30,7 @@
 <div class="w-full flex flex-col gap-8">
     
     <!-- Controls Section: Global Search & Filter -->
-    <div class="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/[0.02] border border-white/5 rounded-2xl p-4 backdrop-blur-sm relative z-10">
+    <div class="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/2 border border-white/5 rounded-2xl p-4 backdrop-blur-sm relative z-10">
         <!-- Search input -->
         <div class="relative w-full md:w-72">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
@@ -70,7 +70,7 @@
         </div>
     {:else}
         <!-- Empty State -->
-        <div transition:fade class="w-full py-20 flex flex-col items-center justify-center text-center bg-white/[0.01] border border-white/5 rounded-3xl backdrop-blur-sm">
+        <div transition:fade class="w-full py-20 flex flex-col items-center justify-center text-center bg-white/1 border border-white/5 rounded-3xl backdrop-blur-sm">
             <div class="w-16 h-16 mb-4 text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

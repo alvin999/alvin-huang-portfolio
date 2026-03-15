@@ -29,7 +29,7 @@
     href={project.url} 
     target="_blank" 
     rel="noopener noreferrer"
-    class="group relative flex flex-col justify-between p-6 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-indigo-500/50 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-15px_rgba(99,102,241,0.3)] h-full"
+    class="group relative flex flex-col justify-between p-6 rounded-2xl bg-white/3 hover:bg-white/6 border border-white/10 hover:border-indigo-500/50 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-15px_rgba(99,102,241,0.3)] h-full"
 >
     <!-- Top section -->
     <div>

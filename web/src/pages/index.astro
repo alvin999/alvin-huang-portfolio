@@ -16,7 +16,7 @@ if (firebaseConfig.apiKey) {
     const db = getFirestore();
     const q = query(collection(db, "projects"), orderBy("stars", "desc"));
     const querySnapshot = await getDocs(q);
-    projects = querySnapshot.docs.map(doc => doc.data());
+    projects = querySnapshot.docs.map((doc: any) => doc.data());
 } 
 
 // Fallback to local JSON if Firestore fetch fails or not configured
