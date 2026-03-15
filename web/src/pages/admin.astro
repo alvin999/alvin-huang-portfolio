@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdminComponent from '../components/Admin.svelte';
+---
+
+<Layout title="管理後台 | Alvin Huang">
+    <div class="pt-20 pb-32">
+        <h1 class="text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-purple-400">
+            Portfolio Administration
+        </h1>
+        <AdminComponent client:only="svelte" />
+    </div>
+</Layout>

@@ -2,9 +2,27 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectList from '../components/ProjectList.svelte';
 import projectsData from '../data/projects.json';
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
-// In production, projects are updated via GitHub CI/CD to projects.json
-const projects = (projectsData || []) as any[];
+// Initialize Firebase for build-time fetching
+const firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
+let projects = [];
+
+if (firebaseConfig.apiKey) {
+    if (getApps().length === 0) {
+        initializeApp(firebaseConfig);
+    }
+    const db = getFirestore();
+    const q = query(collection(db, "projects"), orderBy("stars", "desc"));
+    const querySnapshot = await getDocs(q);
+    projects = querySnapshot.docs.map(doc => doc.data());
+} 
+
+// Fallback to local JSON if Firestore fetch fails or not configured
+if (projects.length === 0) {
+    projects = projectsData || [];
+}
 ---
 
 <Layout title="Alvin Huang | GitHub Portfolio">

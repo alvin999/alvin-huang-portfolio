@@ -15,5 +15,8 @@
     "svelte": "^5.53.7",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "firebase-admin": "^13.7.0"
   }
 }
