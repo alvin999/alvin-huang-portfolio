@@ -26,10 +26,6 @@
             loading = false;
             return;
         }
-            configError = true;
-            loading = false;
-            return;
-        }
 
         onAuthStateChanged(auth, (u) => {
             user = u;

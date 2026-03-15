@@ -6,7 +6,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 // Initialize Firebase for build-time fetching
-let firebaseConfig = {};
+let firebaseConfig: any = {};
 try {
     firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
 } catch (e) {
