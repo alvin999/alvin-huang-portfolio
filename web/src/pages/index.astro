@@ -1,83 +1,336 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import ProjectList from '../components/ProjectList.svelte';
-import projectsData from '../data/projects.json';
-import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore';
+import Layout from "../layouts/Layout.astro";
+import ProjectList from "../components/ProjectList.svelte";
+import CoffeeToCode from "../components/CoffeeToCode.svelte";
+import { RemotionHeroPlayer } from "../remotion/RemotionHeroPlayer";
+import projectsData from "../data/projects.json";
+import { initializeApp, getApps } from "firebase/app";
+import {
+	getFirestore,
+	collection,
+	getDocs,
+	orderBy,
+	query,
+} from "firebase/firestore";
 
 // Initialize Firebase for build-time fetching
 let firebaseConfig: any = {};
 try {
-    firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
+	firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || "{}");
 } catch (e) {}
 let projects = [];
 
 if (firebaseConfig.apiKey) {
-    if (getApps().length === 0) {
-        initializeApp(firebaseConfig);
-    }
-    const db = getFirestore();
-    const q = query(collection(db, "projects"), orderBy("stars", "desc"));
-    const querySnapshot = await getDocs(q);
-    projects = querySnapshot.docs.map((doc: any) => doc.data());
-} 
+	if (getApps().length === 0) {
+		initializeApp(firebaseConfig);
+	}
+	const db = getFirestore();
+	const q = query(collection(db, "projects"), orderBy("stars", "desc"));
+	const querySnapshot = await getDocs(q);
+	projects = querySnapshot.docs.map((doc: any) => ({
+		id: doc.id,
+		...doc.data(),
+	}));
+	// 移除 is_featured 過濾，以確保專案數量 > 10
+}
 
-// Fallback to local JSON if Firestore fetch fails or not configured
+// Fallback to local JSON
 if (projects.length === 0) {
-    projects = projectsData || [];
+	projects = projectsData || [];
+	// 移除 is_featured 過濾
 }
 ---
 
 <Layout title="Alvin Huang | GitHub Portfolio">
-	<!-- Hero Section -->
-	<div class="relative pt-12 pb-20 sm:pt-20 sm:pb-28">
-		<div class="flex flex-col items-center text-center">
-			
-			<div class="mb-8 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium">
-				<span class="relative flex h-2 w-2">
-				  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-				  <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-				</span>
-				Available for new opportunities
+	<!-- Hero Section: GSAP 主題 -->
+	<div
+		id="hero-trigger"
+		class="relative h-[350vh] z-40"
+		data-count={projects.length}
+	>
+		<div
+			id="sticky-hero"
+			class="sticky top-0 h-screen flex flex-col items-center justify-start pt-[10vh] z-40 scale-[0.8] origin-top"
+		>
+			<!-- 背景裝飾 -->
+			<div class="absolute inset-0 -z-10 opacity-30">
+				<div
+					class="absolute top-1/4 left-1/4 w-96 h-96 bg-gb-aqua/20 blur-[120px] rounded-full"
+				>
+				</div>
+				<div
+					class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gb-green/20 blur-[120px] rounded-full"
+				>
+				</div>
 			</div>
-			
-			<div class="mb-8">
-				<img src="/profile.png" alt="Alvin Huang" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-[0_0_40px_rgba(99,102,241,0.4)] border-4 border-white/10 mx-auto transition-transform hover:scale-105 duration-300" />
+
+			<!-- 核心主角：個人照片 (縮小 20% 以達到平衡) -->
+			<div
+				id="avatar-container"
+				class="relative z-10 scale-[1.2] md:scale-[1.4]"
+			>
+				<!-- 主頭照 -->
+				<div class="relative group">
+					<div
+						class="absolute inset-0 bg-gb-orange/20 blur-[60px] rounded-full -z-10"
+					>
+					</div>
+					<img
+						src="/profile.png"
+						alt="Alvin Huang"
+						class="w-[55vw] h-[55vw] md:w-[55vh] md:h-[55vh] object-cover shadow-2xl transition-all"
+						style="mask-image: radial-gradient(circle, black 30%, transparent 80%); -webkit-mask-image: radial-gradient(circle, black 30%, transparent 80%);"
+					/>
+
+					<!-- 徽章 (Badge): 位於照片右下角，純識別資訊 -->
+					<div
+						id="profile-badge"
+						class="absolute bottom-[5%] right-[-8%] md:bottom-[0%] md:right-[-12%] bg-gb-bg-soft/40 backdrop-blur-3xl border border-white/10 p-4 md:p-6 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex items-center gap-4 md:gap-6 transition-colors overflow-hidden"
+					>
+						<div
+							id="badge-shine"
+							class="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] pointer-events-none w-[200%] h-full rotate-12"
+						>
+						</div>
+						<!-- 職業圖示 -->
+						<div
+							class="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-gb-orange/10 border border-gb-orange/30 flex items-center justify-center shrink-0"
+						>
+							<svg
+								class="w-7 h-7 md:w-10 md:h-10 text-gb-orange"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"
+								></path>
+							</svg>
+						</div>
+						<div class="text-left pr-4">
+							<p
+								class="text-[10px] md:text-xs text-gb-orange font-black tracking-widest uppercase mb-1"
+							>
+								Developer
+							</p>
+							<h3
+								class="text-lg md:text-2xl text-white font-black tracking-tight"
+							>
+								Alvin Huang
+							</h3>
+							<p
+								class="text-xs md:text-sm text-gray-500 font-bold tracking-tighter"
+							>
+								@alvin999
+							</p>
+						</div>
+					</div>
+				</div>
 			</div>
-			
-			<h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-				Hi, I'm <span class="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400">Alvin Huang</span>
-			</h1>
-			
-			<p class="mt-4 max-w-2xl text-lg md:text-xl text-gray-400 mb-10 leading-relaxed">
-				I build digital experiences with modern web technologies. Welcome to my portfolio, featuring over <span class="text-white font-medium">{projects.length}</span> open-source projects synchronized directly from GitHub.
-			</p>
-			
-			<div class="flex flex-col sm:flex-row gap-4">
-				<a href="#projects" class="px-8 py-3 rounded-full bg-white text-black font-semibold hover:bg-gray-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)]">
-					View Projects
-				</a>
-				<a href="https://github.com/alvin999" target="_blank" rel="noopener noreferrer" class="px-8 py-3 rounded-full bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-						<path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.298 24 12c0-6.627-5.373-12-12-12"/>
-					</svg>
-					GitHub Profile
-				</a>
+
+			<div id="hero-text" class="mt-[15vh] text-center max-w-4xl px-4">
+				<h1
+					id="hero-title"
+					class="text-6xl md:text-8xl font-black tracking-tighter mb-6"
+				>
+					Hi, I'm <span
+						class="text-transparent bg-clip-text bg-linear-to-r from-gb-orange via-gb-yellow to-gb-red"
+						>Alvin Huang</span
+					>
+				</h1>
+				<p
+					id="hero-desc"
+					class="text-xl md:text-2xl text-gray-400 leading-relaxed mb-10 opacity-70"
+				>
+					I build digital experiences with modern web technologies.<br
+						class="hidden md:block"
+					/>
+					Exploring the future of web through
+				</p>
+				<div class="mb-12">
+					<span
+						id="project-count"
+						class="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-linear-to-b from-white to-white/20 block"
+						>0</span
+					>
+					<span
+						class="text-sm md:text-base text-gb-orange font-bold tracking-[0.3em] uppercase"
+						>Open Source Projects</span
+					>
+				</div>
+				<div
+					id="hero-cta"
+					class="flex flex-col sm:flex-row gap-6 justify-center"
+				>
+					<a
+						href="#projects"
+						class="px-10 py-4 rounded-full bg-white text-black font-bold hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+					>
+						Explore Work
+					</a>
+				</div>
 			</div>
-			
+
+			<!-- 已移除捲動指示以保持純淨 -->
 		</div>
 	</div>
 
-	<!-- Projects Section -->
-	<section id="projects" class="pt-10 scroll-mt-20">
-		<div class="mb-10 flex items-center justify-between">
-			<div>
-				<h2 class="text-3xl font-bold text-white mb-2">Featured Projects</h2>
-				<p class="text-gray-400">Filter and search through the open source repositories.</p>
+	<!-- Content Section: z-index 必須低於 hero-trigger (z-40) -->
+	<div id="content-section" class="relative z-10">
+		<!-- Coffee to Code Animation Section -->
+		<CoffeeToCode client:visible />
+
+		<div class="pt-20 px-4 sm:px-8">
+			<!-- Projects Section -->
+		<section id="projects" class="max-w-7xl mx-auto py-20 scroll-mt-20">
+			<!-- 標題區塊 -->
+			<div class="mb-20 flex flex-col items-center text-center gsap-reveal relative z-10">
+				<!-- 背景發光裝飾 -->
+				<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[100px] bg-gb-orange/20 blur-[80px] rounded-full -z-10"></div>
+				
+				<h2 class="text-5xl md:text-[64px] font-black text-gb-yellow tracking-tighter drop-shadow-2xl">
+					Featured Projects
+				</h2>
+				
+				<!-- 裝飾底線 -->
+				<div class="h-1.5 w-16 bg-gb-orange mt-6 mb-6 rounded-full"></div>
+				
+				<p class="text-xl md:text-2xl text-gb-gray max-w-2xl leading-relaxed">
+					A collection of technical experiments and tools.
+				</p>
 			</div>
-		</div>
-		
-		<!-- Svelte Island Component -->
-		<ProjectList client:load initialProjects={projects} />
-	</section>
+
+			<!-- Svelte Island Component -->
+			<div class="gsap-reveal-stagger">
+				<ProjectList client:load initialProjects={projects} />
+			</div>
+		</section>
+
+		<!-- Footer -->
+		<footer class="py-20 border-t border-white/5 text-center text-gray-500">
+			<p>© 2026 Alvin Huang. Built with Astro, Svelte, and Remotion.</p>
+		</footer>
+	</div>
+
+	<!-- GSAP Scripts -->
+	<script>
+		import { gsap } from "gsap";
+		import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+		gsap.registerPlugin(ScrollTrigger);
+
+		// 1. Hero 整體縮放與位移 (頭像 + 標題)
+		const heroTl = gsap.timeline({
+			scrollTrigger: {
+				trigger: "#hero-trigger",
+				start: "top top",
+				end: "bottom bottom",
+				scrub: 1.5,
+				onUpdate: (self) => {
+					// 從 DOM 讀取專案總數，再依捲動進度計算當前顯示值
+					const totalProjects = parseInt(
+						document.getElementById("hero-trigger")?.dataset
+							?.count ?? "0",
+						10,
+					);
+					const current = Math.round(self.progress * totalProjects);
+					const el = document.getElementById("project-count");
+					if (el) el.textContent = String(current);
+				},
+			},
+		});
+
+		heroTl.to(
+			"#avatar-container",
+			{
+				scale: 0.4,
+				y: -250,
+				opacity: 0,
+			},
+			0,
+		);
+
+		heroTl.to(
+			"#hero-text",
+			{
+				y: -300,
+			},
+			0,
+		);
+
+		heroTl.to(
+			"#profile-badge",
+			{
+				x: 60,
+				scale: 0.9,
+			},
+			0,
+		);
+
+		// 2. 獨立的掃光動畫 (一捲動就出現)
+		gsap.to("#badge-shine", {
+			scrollTrigger: {
+				trigger: "#hero-trigger",
+				start: "top top",
+				end: "15% top",
+				scrub: 1,
+			},
+			x: "150%",
+			ease: "none",
+		});
+
+		// 3. 標題與 CTA 進場
+		gsap.from("#hero-title", {
+			opacity: 0,
+			y: 30,
+			duration: 1.2,
+			delay: 0.2,
+			ease: "expo.out",
+		});
+		gsap.from("#hero-desc", {
+			opacity: 0,
+			y: 20,
+			duration: 1.2,
+			delay: 0.4,
+			ease: "expo.out",
+		});
+		gsap.from("#hero-cta", {
+			opacity: 0,
+			scale: 0.9,
+			duration: 1.2,
+			delay: 0.6,
+			ease: "expo.out",
+		});
+
+		// 4. 內容區塊揭露動畫
+		gsap.utils.toArray(".gsap-reveal").forEach((elem: any) => {
+			gsap.from(elem, {
+				scrollTrigger: {
+					trigger: elem,
+					start: "top 85%",
+					toggleActions: "play none none reverse",
+				},
+				y: 50,
+				opacity: 0,
+				duration: 1,
+				ease: "power3.out",
+			});
+		});
+
+		// 5. 專案列表交錯揭露
+		gsap.from(".gsap-reveal-stagger", {
+			scrollTrigger: {
+				trigger: ".gsap-reveal-stagger",
+				start: "top 80%",
+				toggleActions: "play none none reverse",
+			},
+			y: 100,
+			opacity: 0,
+			duration: 1.5,
+			ease: "power4.out",
+		});
+	</script>
 </Layout>

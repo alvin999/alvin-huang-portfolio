@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import { auth, googleProvider, db } from '../lib/firebase';
     import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
-    import { collection, getDocs, doc, setDoc, query, orderBy } from 'firebase/firestore';
+    import { collection, getDocs, doc, setDoc, query, orderBy, updateDoc } from 'firebase/firestore';
 
     let user = null;
     let loading = true;
@@ -98,9 +98,25 @@
         }
     }
 
-    async function triggerDeploy() {
-        message = "正在觸發重新部署... (此功能需設定 GitHub Token)";
-        // 未來可加入呼叫 GitHub Dispatch 邏輯
+    async function toggleVisibility(project) {
+        const newStatus = !project.is_featured;
+        try {
+            await updateDoc(doc(db, "projects", project.id), {
+                is_featured: newStatus
+            });
+            // Update local state
+            projects = projects.map(p => 
+                p.id === project.id ? { ...p, is_featured: newStatus } : p
+            );
+            message = `已將 ${project.name} 設定為 ${newStatus ? '顯示' : '隱藏'}`;
+        } catch (error) {
+            console.error(error);
+            message = "更新失敗: " + error.message;
+        }
+    }
+
+    function goToDeploy() {
+        window.open('https://github.com/alvin999/alvin-huang-portfolio/actions', '_blank');
     }
 </script>
 
@@ -130,11 +146,11 @@
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-2xl font-bold">專案管理後台</h2>
             <div class="flex gap-4">
-                <button on:click={syncFromGitHub} disabled={isSyncing} class="px-4 py-2 bg-indigo-500 rounded-xl text-sm disabled:opacity-50">
+                <button on:click={syncFromGitHub} disabled={isSyncing} class="px-4 py-2 bg-gb-orange rounded-xl text-sm disabled:opacity-50">
                     {isSyncing ? '同步中...' : '同步 GitHub'}
                 </button>
-                <button on:click={triggerDeploy} class="px-4 py-2 bg-green-600 rounded-xl text-sm">
-                    發布更新
+                <button on:click={goToDeploy} class="px-4 py-2 bg-green-600 rounded-xl text-sm font-bold hover:bg-green-700 transition-colors">
+                    🚀 發布更新
                 </button>
                 <button on:click={logout} class="px-4 py-2 bg-white/10 rounded-xl text-sm border border-white/10">
                     登出
@@ -143,7 +159,7 @@
         </div>
 
         {#if message}
-            <div class="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 text-sm text-indigo-300">
+            <div class="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 text-sm text-gb-orange">
                 {message}
             </div>
         {/if}
@@ -158,6 +174,14 @@
                             <span>⭐ {project.stars}</span>
                             <span>{project.language}</span>
                         </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button 
+                            on:click={() => toggleVisibility(project)} 
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {project.is_featured ? 'bg-gb-orange/20 text-gb-orange border border-gb-orange/50' : 'bg-white/5 text-gray-500 border border-white/10'}"
+                        >
+                            {project.is_featured ? '顯示中' : '已隱藏'}
+                        </button>
                     </div>
                 </div>
             {/each}

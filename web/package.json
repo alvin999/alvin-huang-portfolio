@@ -9,10 +9,17 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/react": "^5.0.1",
     "@astrojs/svelte": "^7.2.5",
+    "@remotion/player": "^4.0.438",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.17.1",
     "firebase": "^12.10.0",
+    "gsap": "^3.14.2",
+    "lottie-web": "^5.13.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "^4.0.438",
     "svelte": "^5.53.7",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3"

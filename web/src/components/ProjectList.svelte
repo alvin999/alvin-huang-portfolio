@@ -40,7 +40,7 @@
                 type="text" 
                 bind:value={searchQuery}
                 placeholder="Search projects..." 
-                class="block w-full pl-10 pr-3 py-2.5 bg-black/40 border border-white/10 rounded-xl leading-5 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                class="block w-full pl-10 pr-3 py-2.5 bg-black/40 border border-white/10 rounded-xl leading-5 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-gb-orange focus:border-gb-orange sm:text-sm transition-all"
             >
         </div>
         
@@ -50,7 +50,7 @@
                 <button
                     on:click={() => activeLanguage = lang}
                     class="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 border {activeLanguage === lang 
-                        ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.2)]' 
+                        ? 'bg-gb-orange/20 text-gb-fg border-gb-orange/50 shadow-[0_0_15px_rgba(254,128,25,0.2)]' 
                         : 'bg-white/5 text-gray-400 border-transparent hover:bg-white/10 hover:text-gray-200'}"
                 >
                     {lang}
