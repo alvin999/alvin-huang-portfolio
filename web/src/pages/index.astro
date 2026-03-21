@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import ProjectList from "../components/ProjectList.svelte";
 import CoffeeToCode from "../components/CoffeeToCode.svelte";
+import RemotionFeaturedProjectsWrapper from "../components/RemotionFeaturedProjectsWrapper.svelte";
 import { RemotionHeroPlayer } from "../remotion/RemotionHeroPlayer";
 import projectsData from "../data/projects.json";
 import { initializeApp, getApps } from "firebase/app";
@@ -83,7 +84,7 @@ if (projects.length === 0) {
 					<!-- 徽章 (Badge): 位於照片右下角，純識別資訊 -->
 					<div
 						id="profile-badge"
-						class="absolute bottom-[5%] right-[-8%] md:bottom-[0%] md:right-[-12%] bg-gb-bg-soft/40 backdrop-blur-3xl border border-white/10 p-4 md:p-6 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex items-center gap-4 md:gap-6 transition-colors overflow-hidden"
+						class="absolute bottom-[-2%] right-[-5%] md:bottom-[0%] md:right-[-12%] bg-gb-bg-soft/40 backdrop-blur-3xl border border-white/10 p-2 md:p-6 rounded-3xl md:rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.5)] flex items-center gap-3 md:gap-6 transition-colors overflow-hidden scale-[0.75] md:scale-100 origin-bottom-right"
 					>
 						<div
 							id="badge-shine"
@@ -92,10 +93,10 @@ if (projects.length === 0) {
 						</div>
 						<!-- 職業圖示 -->
 						<div
-							class="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-gb-orange/10 border border-gb-orange/30 flex items-center justify-center shrink-0"
+							class="w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-gb-orange/10 border border-gb-orange/30 flex items-center justify-center shrink-0"
 						>
 							<svg
-								class="w-7 h-7 md:w-10 md:h-10 text-gb-orange"
+								class="w-5 h-5 md:w-10 md:h-10 text-gb-orange"
 								fill="none"
 								stroke="currentColor"
 								stroke-width="1.5"
@@ -108,19 +109,19 @@ if (projects.length === 0) {
 								></path>
 							</svg>
 						</div>
-						<div class="text-left pr-4">
+						<div class="text-left pr-2 md:pr-4">
 							<p
-								class="text-[10px] md:text-xs text-gb-orange font-black tracking-widest uppercase mb-1"
+								class="text-[8px] md:text-xs text-gb-orange font-black tracking-widest uppercase mb-0.5 md:mb-1"
 							>
 								Developer
 							</p>
 							<h3
-								class="text-lg md:text-2xl text-white font-black tracking-tight"
+								class="text-sm md:text-2xl text-white font-black tracking-tight"
 							>
 								Alvin Huang
 							</h3>
 							<p
-								class="text-xs md:text-sm text-gray-500 font-bold tracking-tighter"
+								class="hidden md:block text-xs md:text-sm text-gray-500 font-bold tracking-tighter"
 							>
 								@alvin999
 							</p>
@@ -184,21 +185,16 @@ if (projects.length === 0) {
 		<div class="pt-20 px-4 sm:px-8">
 			<!-- Projects Section -->
 		<section id="projects" class="max-w-7xl mx-auto py-20 scroll-mt-20">
-			<!-- 標題區塊 -->
-			<div class="mb-20 flex flex-col items-center text-center gsap-reveal relative z-10">
-				<!-- 背景發光裝飾 -->
-				<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[100px] bg-gb-orange/20 blur-[80px] rounded-full -z-10"></div>
-				
-				<h2 class="text-5xl md:text-[64px] font-black text-gb-yellow tracking-tighter drop-shadow-2xl">
-					Featured Projects
-				</h2>
-				
-				<!-- 裝飾底線 -->
-				<div class="h-1.5 w-16 bg-gb-orange mt-6 mb-6 rounded-full"></div>
-				
-				<p class="text-xl md:text-2xl text-gb-gray max-w-2xl leading-relaxed">
-					A collection of technical experiments and tools.
-				</p>
+			<!-- 標題區塊：由 Remotion 動畫驅動 -->
+			<div
+				id="projects-animation-container"
+				class="w-full h-[500px] md:h-[650px] flex items-center justify-center overflow-hidden"
+			>
+				<RemotionFeaturedProjectsWrapper 
+					client:visible 
+					title="Featured Projects" 
+					subtitle="A collection of technical experiments and tools." 
+				/>
 			</div>
 
 			<!-- Svelte Island Component -->
@@ -329,6 +325,21 @@ if (projects.length === 0) {
 			opacity: 0,
 			duration: 1.5,
 			ease: "power4.out",
+		});
+
+		// 6. Featured Projects Remotion 同步動畫
+		gsap.to("#projects-animation-container", {
+			scrollTrigger: {
+				trigger: "#projects-animation-container",
+				start: "top 90%",
+				end: "bottom 20%",
+				scrub: true,
+				onUpdate: (self) => {
+					window.dispatchEvent(new CustomEvent('projects-scroll', { 
+						detail: { progress: self.progress } 
+					}));
+				}
+			}
 		});
 	</script>
 </Layout>

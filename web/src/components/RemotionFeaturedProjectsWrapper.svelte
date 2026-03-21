@@ -12,11 +12,21 @@
 
     onMount(() => {
         root = createRoot(container);
-        
-        root.render(
-            React.createElement(RemotionFeaturedProjectsPlayer, { title, subtitle })
-        );
+        render();
     });
+
+    function render() {
+        if (root) {
+            root.render(
+                React.createElement(RemotionFeaturedProjectsPlayer, { title, subtitle })
+            );
+        }
+    }
+
+    // 當 title 或 subtitle 改變時重新渲染 React
+    $: if (root && (title || subtitle)) {
+        render();
+    }
 
     onDestroy(() => {
         if (root) {

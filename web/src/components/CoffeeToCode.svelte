@@ -9,6 +9,7 @@
   let lottieContainer: HTMLDivElement;
   let keywordContainer: HTMLDivElement;
   let codeBackground: HTMLDivElement;
+  let isMobile = false;
 
   const coffeeKeywords = ["Extraction", "Roast", "Coffee"];
   const techKeywords = ["TypeScript", "C++", "Astro", "Go", "Python", "Svelte"];
@@ -46,11 +47,14 @@
     });
 
     // 1. Coffee Keywords sliding in with different start points simultaneously
+    isMobile = window.innerWidth < 768;
+    const xBase = isMobile ? window.innerWidth * 0.25 : 400; // 更激進的縮小 (25% 視窗寬度)
+
     tl.from(".coffee-keyword", {
-      x: (i) => [400, 300, 500][i], // Different horizontal start points
-      y: (i) => [-50, 20, 80][i], // Different vertical start points
+      x: (i) => [xBase, xBase * 0.5, xBase * 0.8][i], 
+      y: (i) => (isMobile ? [-20, 0, 30][i] : [-50, 20, 80][i]), 
       opacity: 0.3,
-      stagger: 0, // Appear simultaneously
+      stagger: 0, 
       duration: 3,
       ease: "power2.out",
     });
@@ -92,8 +96,8 @@
         opacity: 0,
       },
       {
-        x: (i) => -150 - i * 50,
-        y: (i) => (i % 2 === 0 ? -100 : 100) * (Math.random() + 0.5),
+        x: (i) => (isMobile ? -60 - i * 20 : -150 - i * 50),
+        y: (i) => (i % 2 === 0 ? -1 : 1) * (isMobile ? 40 : 100) * (Math.random() + 0.5),
         scale: 1,
         opacity: 0.8,
         stagger: 0.1,
@@ -133,12 +137,12 @@
   <!-- Code Background Decor -->
   <div
     bind:this={codeBackground}
-    class="absolute inset-0 z-0 pointer-events-none p-10 select-none"
+    class="absolute inset-0 z-0 pointer-events-none p-4 md:p-10 select-none overflow-hidden"
   >
     {#each codeSnippets as snippet, i}
       <div
-        class="code-snippet absolute text-gb-orange font-mono text-sm whitespace-nowrap"
-        style="top: {15 * (i + 1)}%; left: {i % 2 === 0 ? '10%' : '60%'};"
+        class="code-snippet absolute text-gb-orange font-mono text-[10px] md:text-sm whitespace-nowrap"
+        style="top: {15 * (i + 1)}%; left: {i % 2 === 0 ? (isMobile ? '5%' : '10%') : (isMobile ? '50%' : '60%')};"
       >
         {snippet}
       </div>
@@ -147,7 +151,7 @@
 
   <div class="relative z-10 flex flex-col items-center">
     <!-- Center Point Content -->
-    <div class="relative w-64 h-64 flex items-center justify-center">
+    <div class="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
       <!-- Lottie Container -->
       <div
         bind:this={lottieContainer}
@@ -162,7 +166,7 @@
         <!-- Coffee Keywords (Entry) -->
         {#each coffeeKeywords as word}
           <span
-            class="coffee-keyword absolute text-4xl md:text-6xl font-black text-gb-orange tracking-tighter whitespace-nowrap"
+            class="coffee-keyword absolute text-3xl md:text-6xl font-black text-gb-orange tracking-tighter whitespace-nowrap"
           >
             {word}
           </span>
@@ -171,7 +175,7 @@
         <!-- Tech Keywords (Exit) -->
         {#each techKeywords as word}
           <span
-            class="tech-keyword absolute text-4xl md:text-5xl font-black text-gb-aqua/70 tracking-tighter whitespace-nowrap"
+            class="tech-keyword absolute text-2xl md:text-5xl font-black text-gb-aqua/70 tracking-tighter whitespace-nowrap"
           >
             {word}
           </span>

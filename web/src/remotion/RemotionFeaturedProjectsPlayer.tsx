@@ -7,9 +7,19 @@ export const RemotionFeaturedProjectsPlayer: React.FC<{
     subtitle?: string;
 }> = ({ title, subtitle }) => {
     const totalFrames = 90;
+    const [dimensions, setDimensions] = React.useState({ width: 1200, height: 600 });
     const playerRef = useRef<PlayerRef>(null);
 
     useEffect(() => {
+        const updateDimensions = () => {
+            const width = Math.min(window.innerWidth, 1200);
+            const height = window.innerWidth < 768 ? 500 : 600;
+            setDimensions({ width, height });
+        };
+
+        updateDimensions();
+        window.addEventListener('resize', updateDimensions);
+
         const handleScroll = (e: any) => {
             const progress = e.detail?.progress || 0;
             const currentFrame = Math.round(progress * totalFrames);
@@ -20,7 +30,10 @@ export const RemotionFeaturedProjectsPlayer: React.FC<{
         };
 
         window.addEventListener('projects-scroll', handleScroll);
-        return () => window.removeEventListener('projects-scroll', handleScroll);
+        return () => {
+            window.removeEventListener('resize', updateDimensions);
+            window.removeEventListener('projects-scroll', handleScroll);
+        };
     }, []);
 
     return (
@@ -31,8 +44,8 @@ export const RemotionFeaturedProjectsPlayer: React.FC<{
                 inputProps={{ title, subtitle }}
                 durationInFrames={totalFrames}
                 fps={30}
-                compositionWidth={1200}
-                compositionHeight={600}
+                compositionWidth={dimensions.width}
+                compositionHeight={dimensions.height}
                 style={{
                     width: '100%',
                     height: '100%',
