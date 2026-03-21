@@ -12,7 +12,12 @@
     let screenshotUrl = $state('');
 
     onMount(async () => {
-        screenshotUrl = await getProjectScreenshot(project.name, project.screenshot);
+        // 優先讀取 Firestore 快取的截圖，避免觸發 GitHub API 限制
+        if (project.screenshot_url) {
+            screenshotUrl = project.screenshot_url;
+        } else {
+            screenshotUrl = await getProjectScreenshot(project.name, project.screenshot);
+        }
     });
     
     // Determine language color

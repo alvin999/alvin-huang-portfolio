@@ -30,14 +30,12 @@ if (firebaseConfig.apiKey) {
 	projects = querySnapshot.docs.map((doc: any) => ({
 		id: doc.id,
 		...doc.data(),
-	}));
-	// 移除 is_featured 過濾，以確保專案數量 > 10
+	})).filter((p: any) => p.is_featured);
 }
 
 // Fallback to local JSON
 if (projects.length === 0) {
-	projects = projectsData || [];
-	// 移除 is_featured 過濾
+	projects = (projectsData || []).filter((p: any) => p.is_featured);
 }
 ---
 

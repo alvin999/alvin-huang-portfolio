@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { auth, googleProvider, db } from '../lib/firebase';
+    import { getProjectScreenshot } from '../lib/github';
     import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
     import { collection, getDocs, doc, setDoc, query, orderBy, updateDoc } from 'firebase/firestore';
 
@@ -19,12 +20,6 @@
             firebaseConfig = JSON.parse(import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}');
         } catch (e) {
             console.error("Firebase config parse error", e);
-        }
-
-        if (!firebaseConfig.apiKey) {
-            configError = true;
-            loading = false;
-            return;
         }
 
         if (!firebaseConfig.apiKey) {
@@ -70,9 +65,22 @@
             const response = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&per_page=100`);
             const repos = await response.json();
             
+            if (!Array.isArray(repos)) {
+                // 如果不是陣列，通常是 GitHub 回傳了錯誤物件 (例如 Rate Limit)
+                const errorMsg = repos.message || "未知錯誤";
+                throw new Error(`GitHub API 回傳非預期格式: ${errorMsg}`);
+            }
+
             const filteredRepos = repos.filter(repo => !repo.fork);
             
             for (const repo of filteredRepos) {
+                // 在同步時預先抓取截圖 URL，減少客戶端查詢壓力
+                const screenshotUrl = await getProjectScreenshot(repo.name);
+                
+                // 確認專案是否已存在，以保留先前的隱藏/顯示狀態
+                const existingProject = projects.find(p => p.id === String(repo.id));
+                const keepFeatured = existingProject ? existingProject.is_featured : (repo.stargazers_count > 0);
+
                 const projectData = {
                     id: String(repo.id),
                     name: repo.name,
@@ -81,14 +89,15 @@
                     github_repo: repo.html_url,
                     stars: repo.stargazers_count,
                     language: repo.language || "",
-                    is_featured: repo.stargazers_count > 0,
+                    is_featured: keepFeatured,
+                    screenshot_url: screenshotUrl,
                     updated_at: new Date().toISOString()
                 };
                 
                 await setDoc(doc(db, "projects", String(repo.id)), projectData);
             }
             
-            message = "同步完成！";
+            message = `同步完成！共更新 ${filteredRepos.length} 個專案。`;
             await fetchProjects();
         } catch (error) {
             console.error(error);
