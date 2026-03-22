@@ -66,3 +66,20 @@ export async function getProjectScreenshot(projectName: string, specifiedFile?: 
     const lastResort = `https://raw.githubusercontent.com/${owner}/${projectName}/main/screenshots/screenshot1.png`;
     return lastResort;
 }
+
+/**
+ * 獲取 GitHub 專案的最新 Release 網址
+ */
+export async function getProjectReleaseUrl(projectName: string): Promise<string | null> {
+    const owner = 'alvin999';
+    try {
+        const response = await fetch(`https://api.github.com/repos/${owner}/${projectName}/releases/latest`);
+        if (response.ok) {
+            const data = await response.json();
+            return data.html_url || null;
+        }
+    } catch (e) {
+        console.error(`Error fetching release for ${projectName}:`, e);
+    }
+    return null;
+}
