@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import ProjectList from "../components/ProjectList.svelte";
 import CoffeeToCode from "../components/CoffeeToCode.svelte";
-import RemotionFeaturedProjectsWrapper from "../components/RemotionFeaturedProjectsWrapper.svelte";
+import { RemotionFeaturedProjectsPlayer } from "../remotion/RemotionFeaturedProjectsPlayer";
 import projectsData from "../data/projects.json";
 import { initializeApp, getApps } from "firebase/app";
 import {
@@ -189,7 +189,7 @@ if (projects.length === 0) {
 				id="projects-animation-container"
 				class="w-full h-[500px] md:h-[650px] flex items-center justify-center overflow-hidden"
 			>
-				<RemotionFeaturedProjectsWrapper 
+				<RemotionFeaturedProjectsPlayer 
 					client:visible 
 					title="Featured Projects" 
 					subtitle="A collection of technical experiments and tools." 
